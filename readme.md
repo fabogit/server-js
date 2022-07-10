@@ -3,7 +3,7 @@
 login/signup
 auth/roles:
 an user can read and create his tickets,
-an admin can read all users tickets and update completed field
+an admin can read all users tickets and update the completed field
 
 
 access token:
@@ -16,16 +16,16 @@ Bearer pasteheretheAccessTokenFrom/users/login
 
 DONE	`POST`		`/users/register`
 DONE	`POST`		`/users/login`
-TODO	`DELETE`	`/users/logout`
+TODO	`DELETE`	`/users/logout`		-> Remove jwt client side
 
 - auth api
 
-DOIN	`GET` 		`/tickets`				-> fetch user tickets /paginated result
-TODO	`POST`		`/tickets/:username`	-> ticket creation
-TODO	`GET`		`/tickets`				-> ADMIN get all tickets
-TODO	`GET`		`/tickets/:id`			-> get ticket by id
-TODO	`PUT`		`/tickets/:id`			-> ADMIN update ticket status
-TODO	`DELETE`	`/tickets/:id`			-> ADMIN delete ticket
+DOIN	`GET` 		`/tickets`			-> fetch user tickets /paginated result
+DOIN	`GET`		`/tickets`			-> ADMIN get all tickets
+TODO	`POST`		`/tickets`			-> ticket creation
+TODO	`GET`		`/tickets/:id`		-> get ticket by id
+TODO	`PUT`		`/tickets/:id`		-> ADMIN update ticket status
+TODO	`DELETE`	`/tickets/:id`		-> ADMIN delete ticket
 
 
 # data

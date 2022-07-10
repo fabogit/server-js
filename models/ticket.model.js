@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema;
-
-var TicketSchema = new Schema({
+var TicketSchema = new mongoose.Schema({
 	username: {
 		type: String,
 		ref: 'User',
@@ -13,9 +11,9 @@ var TicketSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	completed: {
+	isCompleted: {
 		type: Boolean,
-		required: true,
+		required: false,
 		default: false,
 	},
 }, {

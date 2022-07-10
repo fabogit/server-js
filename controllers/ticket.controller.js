@@ -1,24 +1,38 @@
-const connection = require('../data/database');
 const Ticket = require('../models/ticket.model');
 
-async function testTicket() {
-	return await Ticket.find();
+async function createTicket(username, description, isCompleted) {
+	try {
+		return await Ticket.create({ username, description, isCompleted });
+	} catch (error) {
+		throw error;
+	}
 }
 
-async function createTicket(username, description, completed = false) {
-	return await Ticket.create({ username: username, description: description, completed: completed });
+function getTicketById(ticketId) {
+	try {
+		return "test"
+	} catch (error) {
+		throw error;
+	}
 }
 
-function getUserTickets() {
-
+async function getUserTickets(username, skip, limit) {
+	try {
+		const userTickets = await Ticket.find({ username }, {}, { skip, limit });
+		return userTickets;
+	} catch (error) {
+		throw error;
+	}
 }
 
-function getTicketById() {
 
-}
-
-function getAllUsersTickets() {
-
+async function adminGetAllTickets(skip, limit) {
+	try {
+		const userTickets = await Ticket.find({}, {}, { skip, limit });
+		return userTickets;
+	} catch (error) {
+		throw error;
+	}
 }
 
 function adminUpdateTicket() {
@@ -29,9 +43,20 @@ function adminDeleteTicket() {
 
 }
 
+async function testTickets() {
+	try {
+		const tickets = await Ticket.find();
+		return tickets;
+	} catch (error) {
+		throw error;
+	}
+}
+
 
 module.exports = {
-	testTicket,
 	createTicket,
-	getAllUsersTickets
+	getTicketById,
+	getUserTickets,
+	adminGetAllTickets,
+	testTickets
 };

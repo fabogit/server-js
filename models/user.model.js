@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 
 const UserSchema = new mongoose.Schema({
 	username: {
@@ -13,12 +12,14 @@ const UserSchema = new mongoose.Schema({
 		required: true,
 	},
 	isAdmin: {
-		type:  Boolean,
+		type: Boolean,
 		required: true,
 		default: false
 	}
 });
 
-const User = mongoose.model("User", UserSchema)
+// UserSchema.index({ username: 1})
+
+const User = mongoose.model("User", UserSchema);
 
 module.exports = User;
