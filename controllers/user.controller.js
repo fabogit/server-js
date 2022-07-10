@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 
-const User = require('../models/user.model');
-const ErrorCode = require('../middlewares/http-error.middleware');
+const User = require("../models/user.model");
+const ErrorCode = require("../middlewares/http-error.middleware");
 
-// TODO
+// FIXME DOCS
 /**
  *
  * @param {*} username
@@ -13,16 +13,16 @@ const ErrorCode = require('../middlewares/http-error.middleware');
  */
 async function registerUser(username, password, isAdmin) {
 	// search if username exist
-	const existAlready = await User.findOne({ username: username });
+	const existAlready = await User.findOne({ username });
 	if (existAlready) {
-		throw new ErrorCode(409, 'Username already in use');
+		throw new ErrorCode(409, "Username already in use");
 	}
 	// if valid save fields
 	try {
 		const hashedUser = {
 			username,
 			password: bcrypt.hashSync(password, 10),
-			isAdmin
+			isAdmin,
 		};
 		const newUser = await User.create(hashedUser);
 		return newUser;
@@ -31,8 +31,7 @@ async function registerUser(username, password, isAdmin) {
 	}
 }
 
-
-// FIXME docs
+// FIXME DOCS
 
 /**
  *  @typedef {{myvar: number}} Nome
@@ -51,42 +50,40 @@ async function registerUser(username, password, isAdmin) {
 
 /**
  *
- * @param {*} username
- * @param {*} password
- * @returns
+ * @param {string} username - username used to register an user
+ * @param {string} password - password compare based on the hashedPassword present in the db
+ * @returns	User credentials for the logged in user if the credentials are correct
  */
 async function loginUser(username, password) {
 	// check if username exist
-	const user = await User.findOne({ username: username });
+	const user = await User.findOne({ username });
 	if (user === null) {
-		throw new ErrorCode(404, 'Username not found');
+		throw new ErrorCode(404, "Username not found");
 	}
 	// verify entered password
 	const passIsValid = bcrypt.compareSync(password, user.password);
 	if (passIsValid) {
-		return { id: user._id, username: user.username, isAdmin: user.isAdmin };
+		return { userId: user._id, username: user.username, isAdmin: user.isAdmin };
 	}
-	throw new ErrorCode(401, 'Invalid password');
+	throw new ErrorCode(401, "Invalid password");
 }
 
-function logout(params) {
-
+// FIXME DOCS
+/**
+ *
+ * @param {string} username - the username to delete
+ * @returns	Delete the account of the logged in user
+ */
+async function deleteUser(username) {
+	try {
+		return await User.deleteOne({ username });
+	} catch (error) {
+		throw error;
+	}
 }
 
-// TODO load user serve??
-async function findUsername(username) {
-	const user = await User.findOne({ username: username });
-	return user;
-}
-
-// TODO
-async function getAllUsers() {
-	return await User.find();
-}
-
-// TODO
-async function findUserById(username) {
-	return await User.findById();
-}
-
-module.exports = { registerUser, loginUser, findUsername, getAllUsers };
+module.exports = {
+	registerUser,
+	loginUser,
+	deleteUser,
+};

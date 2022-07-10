@@ -1,69 +1,142 @@
-const express = require('express');
+const express = require("express");
 
-const { testTickets, createTicket, adminGetAllTickets } = require('../controllers/ticket.controller');
-const ErrorCode = require('../middlewares/http-error.middleware');
-const { validate } = require('../middlewares/validation.middleware');
+const {
+	createTicket,
+	getTickets,
+	getTicketById,
+	adminUpdateTicket,
+	adminDeleteTicket,
+} = require("../controllers/ticket.controller");
+
+const { validate } = require("../middlewares/validation.middleware");
 
 const router = express.Router();
 
-// TODO
-router.get('/', validate('query', 'ticketPg'), (request, response, next) => {
-	if (!request.user.isAdmin) {
-		// user is not admin, GET ONLY USER TICKETS -> getUserTickets()
+// DONE
+router.get(
+	"/",
+	validate("query", "ticketQueryValSchema"),
+	async (request, response, next) => {
+		let queryUsername = {};
+
+		if (!request.user.isAdmin) {
+			queryUsername = { username: request.user.username };
+		}
+
+		//  user is admin, GET ALL USERS TICKETS -> no query filter
 		try {
-			const data = 5;
-			response.send(data);
+			// handle pagination
+			const page = +request.query.page || 1; // start from 1
+			const limit = +request.query.limit || 20;
+			const skip = (page - 1) * limit; // page starts from 1
+
+			const { count, tickets } = await getTickets(queryUsername, limit, skip);
+			if (!count) response.status(404).json({ message: "Cannot find tickets" });
+
+			const pagesCount = count / limit;
+			//! SET PAGE LIMIT
+			// if (page > pagesCount) response.status(404).json({ message: `Page out of bound, max page available ${parseInt(pagesCount)}` });
+
+			const pagination = {
+				page,
+				totalItems: count,
+				itemsPerPage: limit,
+				totalPages: pagesCount,
+			};
+			response.json({ pagination, tickets });
 		} catch (error) {
-			next((error));
+			next(error);
 		}
 	}
+);
 
-	if (request.user.isAdmin) {
-		//  user is admin, GET ALL USERS TICKETS -> getAllUsersTickets()
+// DONE
+router.get(
+	"/:ticketId",
+	validate("params", "ticketParamValSchema"),
+	async (request, response, next) => {
 		try {
-			const data = adminGetAllTickets(request.query.skip, request.query.limit);
-			response.send(data);
+			const ticketId = request.params.ticketId;
+			const ticket = await getTicketById(ticketId);
+			response.json({ message: `TicketId _id:${ticketId} retrived `, ticket });
 		} catch (error) {
-			next((error));
+			next(error);
 		}
 	}
+);
 
-});
-
-
-// TODO
-router.post('/', async (request, response, next) => {
-	try {
-		if (request.user.username != request.body.username) {
-			throw new ErrorCode(401, 'ticket.username and user.username are not the same');
+// DONE
+router.post(
+	"/",
+	validate("body", "ticketBodyValSchema"),
+	async (request, response, next) => {
+		try {
+			// get name from jwt
+			const username = request.user.username;
+			const ticket = await createTicket(
+				username,
+				request.body.description,
+				request.body.isCompleted
+			);
+			response.json({ message: `Ticket created by user ${username}`, ticket });
+		} catch (error) {
+			next(error);
 		}
-		const ticket = await createTicket(request.body.username, request.body.description, request.body.completed);
-		response.json({ message: 'Ticket created', ticket });
-	} catch (error) {
-		next((error));
 	}
-});
-router.put('/');
+);
 
-
-router.get('/test', async function (request, response, next) {
-	try {
-		const tickets = await testTickets();
-		//  find tickets
-		response.json({ message: 'User found', tickets });
-	} catch (error) {
-		next(error);
+// FIXME TEST, validation
+router.put(
+	"/:ticketId",
+	validate("body", "ticketBodyValSchema"),
+	async (request, response, next) => {
+		try {
+			if (request.user.isAdmin) {
+				const ticketId = request.params.ticketId;
+				const ticket = await adminUpdateTicket(
+					ticketId,
+					request.body.description,
+					request.body.isCompleted
+				);
+				response.json({
+					message: `Ticket ${ticketId} updated by admin ${request.user.username}`,
+					ticket,
+				});
+			} else {
+				response
+					.status(400)
+					.json({ message: "Only admins can update tickets" });
+			}
+		} catch (error) {
+			next(error);
+		}
 	}
-});
+);
 
+// FIXME TEST, validation
+router.delete(
+	"/:ticketId",
+	validate("body", "ticketBodyValSchema"),
+	async (request, response, next) => {
+		try {
+			if (request.user.isAdmin) {
+				const ticketId = request.params.ticketId;
+				const ticket = await adminDeleteTicket(ticketId);
+				response.json({
+					message: `Ticket ${ticketId} deleted by admin ${request.user.username}`,
+					ticket,
+				});
+			} else {
+				response
+					.status(400)
+					.json({ message: "Only admins can update tickets" });
+			}
+		} catch (error) {
+			next(error);
+		}
+	}
+);
 
-// paginated result => MyModel.find(query, fields, { skip: req.query.skip, limit: req.query.limit }, function(err, results) { ... })
-
-// DOIN	`GET` 		`/tickets`						-> fetch user tickets /paginated result
-// TODO	`POST`		`/tickets/`						-> ticket creation
-// TODO	`GET`			`/tickets`						-> USER get user tickets, ADMIN get all tickets
-// TODO	`GET`			`/tickets/:id`				-> get ticket by id
-// TODO	`PUT`			`/tickets/:id`				-> ADMIN update ticket status
-// TODO	`DELETE`	`/tickets/:id`				-> ADMIN delete ticket
+// TODO might want to get all ticket for a username (admin filter by username/ clientside filtering)
 
 module.exports = router;

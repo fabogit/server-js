@@ -1,9 +1,10 @@
 const { userValSchema, usernameSchema } = require('./users.schema');
-const { ticketValSchema, ticketQueryValSchema } = require('./tickets.schema');
+const { ticketBodyValSchema, ticketQueryValSchema, ticketParamValSchema } = require('./tickets.schema');
 
 module.exports = {
 	user: userValSchema,
 	username: usernameSchema,
-	ticket: ticketValSchema,
-	ticketPg : ticketQueryValSchema
+	ticketBodyValSchema,
+	ticketQueryValSchema,
+	ticketParamValSchema
 };

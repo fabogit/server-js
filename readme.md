@@ -14,18 +14,28 @@ Bearer pasteheretheAccessTokenFrom/users/login
 
 - open api
 
-DONE	`POST`		`/users/register`
-DONE	`POST`		`/users/login`
-TODO	`DELETE`	`/users/logout`		-> Remove jwt client side
+-	`POST`		`/users/`
+
+-	`DELETE`	`/users/`			-> Delete a user if is currently logged or isAdmin=true
+
+-	`GET`		`/users/login`
+
+-	`GET`		`/users/logout`		-> Remove jwt client side
 
 - auth api
 
-DOIN	`GET` 		`/tickets`			-> fetch user tickets /paginated result
-DOIN	`GET`		`/tickets`			-> ADMIN get all tickets
-TODO	`POST`		`/tickets`			-> ticket creation
-TODO	`GET`		`/tickets/:id`		-> get ticket by id
-TODO	`PUT`		`/tickets/:id`		-> ADMIN update ticket status
-TODO	`DELETE`	`/tickets/:id`		-> ADMIN delete ticket
+-	`GET` 		`/tickets`			-> fetch user tickets /paginated result
+
+-	`GET`		`/tickets`			-> ADMIN get all tickets
+
+-	`POST`		`/tickets`			-> ticket creation
+
+-	`GET`		`/tickets/:id`		-> get ticket by id
+
+-	`PUT`		`/tickets/:id`		-> ADMIN update ticket status
+
+-	`DELETE`	`/tickets/:id`		-> ADMIN delete ticket
+
 
 
 # data
@@ -35,22 +45,26 @@ collections:
 ```
 users: {
 	username: string,
-	 password: string,
-	  isAdmin: boolean
-	  }
+	password: string,
+	isAdmin: boolean
+	}
 ```
 
 ```
 tickets: {
 	username: string,
  	description: string,
-  	completed: boolean(default: false)
-  }
+  	isCompleted: boolean(default: false)
+	}
 ```
 
 to gen token
 
 `node` -> `require('crypto').randomBytes(64).toString('hex')`
+
+
+
+
 
 
 # Setup

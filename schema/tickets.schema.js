@@ -1,8 +1,7 @@
 const Joi = require("joi");
 
-const ticketValSchema = Joi.object(
+const ticketBodyValSchema = Joi.object(
 	{
-		username: Joi.string().min(4).required(),
 		description: Joi.string().min(10).required(),
 		isCompleted: Joi.boolean(),
 		// mongo auto timestamp
@@ -12,11 +11,17 @@ const ticketValSchema = Joi.object(
 
 const ticketQueryValSchema = Joi.object(
 	{
-		skip: Joi.number().min(1),
-		limit: Joi.number().min(1)
+		page: Joi.number().min(1),
+		limit: Joi.number().min(1).max(50)
+	});
+
+const ticketParamValSchema = Joi.object(
+	{
+		ticketId: Joi.string().hex().length(24)
 	});
 
 module.exports = {
-	ticketValSchema,
-	ticketQueryValSchema
+	ticketBodyValSchema,
+	ticketQueryValSchema,
+	ticketParamValSchema
 };
