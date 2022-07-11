@@ -1,30 +1,31 @@
-const express = require('express');
-const logger = require('morgan');
-const cors = require('cors');
-const helmet = require('helmet');
+const express = require("express");
+const logger = require("morgan");
+const cors = require("cors");
+const helmet = require("helmet");
 
-const errorHandlerMiddleware = require('./middlewares/error.middleware');
-const jwtMiddleware = require('./middlewares/jwt.middleware');
+const errorHandlerMiddleware = require("./middlewares/error.middleware");
+const jwtMiddleware = require("./middlewares/jwt.middleware");
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users.routes.js');
-const ticketsRouter = require('./routes/tickets.routes.js');
-const connectDB = require('./data/database');
+const testRouter = require("./routes/test");
+const usersRouter = require("./routes/users.routes.js");
+const ticketsRouter = require("./routes/tickets.routes.js");
+const connectDB = require("./data/database");
 
 const app = express();
 
 const port = process.env.PORT || 3000;
 
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+// TODO enable for client
 // app.use(express.urlencoded({ extended: false }));
 
 // routes
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/tickets', jwtMiddleware.authenticateUser, ticketsRouter);
+app.use("/", testRouter);
+app.use("/users", usersRouter);
+app.use("/tickets", jwtMiddleware.authenticateUser, ticketsRouter);
 // error handling
 app.use(errorHandlerMiddleware);
 

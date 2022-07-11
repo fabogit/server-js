@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const mongoUri = process.env.MONGO_URI;
 
@@ -8,7 +8,7 @@ const connectDB = async () => {
 		const conn = await mongoose.connect(mongoUri);
 		console.log(`MongoDB Connected: ${conn.connection.host}`);
 	} catch (error) {
-		throw new Error(error.message)
+		throw new Error(error.message);
 	}
 };
 

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 // serialize user
 function serializeUser(user) {
 	try {
-		const userJwt = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+		const userJwt = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET	);
 		return userJwt;
 	} catch (error) {
 		throw error;
@@ -19,6 +19,7 @@ function authenticateUser(request, response, next) {
 	if (token == null) return response.sendStatus(401).json({ message: 'Null or invalid jwt' });
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
 		if (err) return response.sendStatus(403).json({message: 'Forbidden or insufficient permissions'});
+		// create user if token is valid
 		request.user = user;
 		next();
 	});

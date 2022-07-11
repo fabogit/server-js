@@ -1,8 +1,11 @@
 
 
 login/signup
+
 auth/roles:
+
 an user can read and create his tickets,
+
 an admin can read all users tickets and update the completed field
 
 
@@ -16,11 +19,11 @@ Bearer pasteheretheAccessTokenFrom/users/login
 
 -	`POST`		`/users/`
 
--	`DELETE`	`/users/`			-> Delete a user if is currently logged or isAdmin=true
+-	`DELETE`	`/users/`			-> Delete a user if is currently logged in
 
 -	`GET`		`/users/login`
 
--	`GET`		`/users/logout`		-> Remove jwt client side
+-	`GET`		`/users/logout`		-> Remove jwt client side || DELETE session
 
 - auth api
 
@@ -35,6 +38,10 @@ Bearer pasteheretheAccessTokenFrom/users/login
 -	`PUT`		`/tickets/:id`		-> ADMIN update ticket status
 
 -	`DELETE`	`/tickets/:id`		-> ADMIN delete ticket
+
+
+
+
 
 
 

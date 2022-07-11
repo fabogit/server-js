@@ -18,7 +18,7 @@ async function createTicket(username, description, isCompleted) {
 /**
  * Get all tickets for the query parameter, set paginated result based on the limit params
  * @param {Object} query - Object used to filter the result
- * @param {number} limit - How many result to fetch for every page
+ * @param {number} limit - How many result to fetch for every page (max value 50)
  * @param {number} skip - Number of documents to skip to return the requested data paginated
  * @returns The total numbers of documents and the documents filterd based on the query parameter
  */
@@ -36,8 +36,8 @@ async function getTickets(query, limit, skip) {
 }
 
 /**
- * Retrive a ticket by its id
- * @param {MongoObjectId} ticketId - the ticket _id
+ * Retrive a single ticket by _id
+ * @param {ObjectId} ticketId - the ticket _id field
  * @returns	A single ticket corresponding the passed ticketId
  */
 async function getTicketById(ticketId) {
@@ -49,13 +49,13 @@ async function getTicketById(ticketId) {
 	}
 }
 
-// TODO DOCS
+// TODO TEST
 /**
- *
- * @param {*} ticketId
- * @param {*} update
- * @param {*} status
- * @returns
+ * Update a ticket description and/or isCompleted
+ * @param {ObjectId} ticketId - the ticket _id field
+ * @param {string} update - The new content of the description field
+ * @param {boolean} status - The new value of the isCompleted field
+ * @returns the updated ticket object
  */
 async function adminUpdateTicket(ticketId, update, status) {
 	try {
@@ -69,11 +69,11 @@ async function adminUpdateTicket(ticketId, update, status) {
 	}
 }
 
-// TODO TEST, DOCS
+// TODO TEST
 /**
- *
- * @param {*} ticketId
- * @returns
+ * Delete a ticket
+ * @param {ObjectId} ticketId - the ticket _id field
+ * @returns MongoDb operation outcome response
  */
 async function adminDeleteTicket(ticketId) {
 	try {
