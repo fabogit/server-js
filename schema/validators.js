@@ -1,14 +1,18 @@
 const { userValSchema, usernameSchema } = require("./users.schema");
 const {
-	ticketBodyValSchema,
+	ticketBodyPostValSchema,
+	ticketBodyPostMessValSchema,
 	ticketQueryValSchema,
 	ticketParamValSchema,
+	ticketBodyPutValSchema
 } = require("./tickets.schema");
 
 module.exports = {
 	user: userValSchema,
 	username: usernameSchema,
-	ticketBodyValSchema,
+	ticketBodyPostValSchema,
+	ticketBodyPostMessValSchema,
 	ticketQueryValSchema,
 	ticketParamValSchema,
+	ticketBodyPutValSchema
 };

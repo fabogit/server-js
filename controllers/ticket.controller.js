@@ -2,14 +2,37 @@ const Ticket = require("../models/ticket.model");
 
 /**
  * Create a new ticket
- * @param {string} username - the user who created the ticke
+ * @param {string} username - ticket creator username
+ * @param {ObjectId} userId - ticket creator userId
  * @param {string} description - description of the ticket
  * @param {boolean} isCompleted - true/false if the ticket stauts is open/closed (defaulted to false)
  * @returns	A ticket Object
  */
-async function createTicket(username, description, isCompleted) {
+async function createTicket(username, userId, description, isCompleted) {
 	try {
-		return await Ticket.create({ username, description, isCompleted });
+		return await Ticket.create({ username, userId, description, isCompleted });
+	} catch (error) {
+		throw error;
+	}
+}
+
+// TODO create comunications
+/**
+ *
+ * @param {*} ticketId
+ * @param {*} username
+ * @param {*} userId
+ * @param {*} content
+ */
+async function createTicketMessage(ticketId, username, userId, message) {
+	try {
+		// update ticket comunications, push to array
+		const updatedTicket = await Ticket.findByIdAndUpdate(ticketId, {
+			$push: {
+				comunications: { date: new Date(), userId, username, message },
+			},
+		});
+		return updatedTicket;
 	} catch (error) {
 		throw error;
 	}
@@ -51,17 +74,16 @@ async function getTicketById(ticketId) {
 
 // TODO TEST
 /**
- * Update a ticket description and/or isCompleted
+ * Update if ticket isCompleted
  * @param {ObjectId} ticketId - the ticket _id field
- * @param {string} update - The new content of the description field
  * @param {boolean} status - The new value of the isCompleted field
  * @returns the updated ticket object
  */
-async function adminUpdateTicket(ticketId, update, status) {
+async function adminUpdateTicket(ticketId, status) {
 	try {
 		const ticket = await Ticket.updateOne(
 			{ _id: ticketId },
-			{ description: update, isCompleted: status }
+			{ isCompleted: status }
 		);
 		return ticket;
 	} catch (error) {
@@ -86,6 +108,7 @@ async function adminDeleteTicket(ticketId) {
 
 module.exports = {
 	createTicket,
+	createTicketMessage,
 	getTickets,
 	getTicketById,
 	getTickets,

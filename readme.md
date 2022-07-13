@@ -1,6 +1,12 @@
+# Use case
 
+- main page allow to login/register/logout
 
-login/signup
+- on login ui will load all user available tickets (might add filter to show only the open/closed), data is paginated
+
+- users can create a new ticket
+
+- single tickets can be selected to show full details, admin users can update/delete tickets
 
 auth/roles:
 
@@ -15,37 +21,36 @@ access token:
 Bearer pasteheretheAccessTokenFrom/users/login
 ```
 
-- open api
+# API
 
--	`POST`		`/users/`
+## open api
+
+-	`POST`		`/users/`			-> Register a new user
+
+-	`PUT`		`/users/`			-> logged in user can update username/password // TODO
 
 -	`DELETE`	`/users/`			-> Delete a user if is currently logged in
 
--	`GET`		`/users/login`
+-	`GET`		`/users/login`		-> Log in the user and create the access token
 
--	`GET`		`/users/logout`		-> Remove jwt client side || DELETE session
+-	`GET`		`/users/logout`		-> Remove jwt client side || DELETE session ?
 
-- auth api
+## auth api, access token needed
 
--	`GET` 		`/tickets`			-> fetch user tickets /paginated result
+-	`GET` 		`/tickets`				-> fetch user tickets /paginated result, ADMINS will get all tickets
 
--	`GET`		`/tickets`			-> ADMIN get all tickets
+-	`POST`		`/tickets`				-> user ticket creation
 
--	`POST`		`/tickets`			-> ticket creation
+-	`GET`		`/tickets/:id`			-> get ticket by id
 
--	`GET`		`/tickets/:id`		-> get ticket by id
+-	`PUT`		`/tickets/:id`			-> ADMINS update ticket status
 
--	`PUT`		`/tickets/:id`		-> ADMIN update ticket status
+-	`DELETE`	`/tickets/:id`			-> ADMINS delete ticket
 
--	`DELETE`	`/tickets/:id`		-> ADMIN delete ticket
-
-
+- 	`POST`		`/messages/:ticketId`	-> ADMINS and the ticket owner can create messages
 
 
-
-
-
-# data
+# data schema
 
 collections:
 
@@ -62,69 +67,11 @@ tickets: {
 	username: string,
  	description: string,
   	isCompleted: boolean(default: false)
+  	createdAt: Date
+  	updatedAt: Date
 	}
 ```
 
 to gen token
 
 `node` -> `require('crypto').randomBytes(64).toString('hex')`
-
-
-
-
-
-
-# Setup
-
-- Create `tsconfig.json` file
-
-```
-npx tsc --init
-```
-- Initialize nodejs application and fill needed fields
-
-```
-npm init
-```
-- Create source code folder and server entrypoint @`/src/app.ts`
-
-```
-mkdir ./src/ && touch ./src/app.ts
-```
-
-- Install Dependencies
-
-```
-npm i express
-```
-
-- Install ts devDependencies (`ts-node-dev` to run server like `nodemon`)
-
-```
-npm i -D typescript @types/node @types/express ts-node-dev
-```
-
-- Add script to package.json (watch mode and restart on save)
-
-```
-  "scripts": {
-	"dev": "ts-node-dev --respawn --transpile-only src/app.ts"
-  },
-```
-- Install Swagger Dependencies
-
-```
-npm i swagger-jsdoc swagger-ui-express
-```
-
-```
-npm i --save-dev @types/swagger-jsdoc @types/swagger-ui-express
-```
-
-in `tsconfig.json` set  `"resolveJsonModule": true`
-
-- Start server (npm start)
-
-```
-npm run dev
-```
