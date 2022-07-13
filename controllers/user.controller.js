@@ -68,15 +68,27 @@ async function loginUser(username, password) {
 	throw new ErrorCode(401, "Invalid password");
 }
 
+
+// TODO
+async function updateUser(userId, username, password) {
+	try {
+		return await User.deleteOne({ username });
+	} catch (error) {
+		throw error;
+	}
+}
+
+
+
 // FIXME DOCS
 /**
  *
- * @param {string} username - the username to delete
+ * @param {string} userId - the username to delete
  * @returns	Delete the account of the logged in user
  */
-async function deleteUser(username) {
+async function deleteUser(userId) {
 	try {
-		return await User.deleteOne({ username });
+		return await User.deleteOne({ _id: userId });
 	} catch (error) {
 		throw error;
 	}
@@ -85,5 +97,6 @@ async function deleteUser(username) {
 module.exports = {
 	registerUser,
 	loginUser,
+	updateUser,
 	deleteUser,
 };

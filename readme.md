@@ -27,7 +27,7 @@ Bearer pasteheretheAccessTokenFrom/users/login
 
 -	`POST`		`/users/`			-> Register a new user
 
--	`PUT`		`/users/`			-> logged in user can update username/password // TODO
+-	`PUT`		`/users/:userId`	-> logged in user can update username/password // TODO
 
 -	`DELETE`	`/users/`			-> Delete a user if is currently logged in
 

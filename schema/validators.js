@@ -1,4 +1,4 @@
-const { userValSchema, usernameSchema } = require("./users.schema");
+const { userIdSchema, userValSchema, usernameSchema, updateUserBody } = require("./users.schema");
 const {
 	ticketBodyPostValSchema,
 	ticketBodyPostMessValSchema,
@@ -8,8 +8,10 @@ const {
 } = require("./tickets.schema");
 
 module.exports = {
+	userIdSchema,
 	user: userValSchema,
 	username: usernameSchema,
+	updateUserBody,
 	ticketBodyPostValSchema,
 	ticketBodyPostMessValSchema,
 	ticketQueryValSchema,

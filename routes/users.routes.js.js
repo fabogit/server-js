@@ -9,6 +9,7 @@ const {
 const {
 	loginUser,
 	registerUser,
+	updateUser,
 	deleteUser,
 } = require("../controllers/user.controller.js");
 
@@ -23,8 +24,10 @@ router.post(
 				request.body.password,
 				request.body.isAdmin
 			);
-			// TODO filter out password ecc..
-			return response.json({ message: "User created", user });
+			return response.json({
+				message: "User created",
+				user: request.body.username,
+			});
 		} catch (error) {
 			next(error);
 		}
@@ -55,27 +58,54 @@ router.post(
 	}
 );
 
-// DONE
-router.delete("/remove", authenticateUser, async (request, response, next) => {
-	try {
-		const usernameToDelete = request.body.username;
-		const loggedInUser = request.user.username;
-		if (loggedInUser == usernameToDelete) {
-			const result = await deleteUser(usernameToDelete);
-			// TODO delete client jwt
-			return response.json({ message: "User deleted", user: result });
-		} else {
-			return response.json({ message: "Unable to delete user" });
+// TODO update user
+router.put(
+	"/:userId",
+	validate("params", "userIdSchema"),
+	validate("body", "updateUser"),
+	authenticateUser,
+	async function (request, response, next) {
+		// TODO update here
+		try {
+			const loggedInUser = request.user.userId;
+			if (loggedInUser == request.params.userId) {
+				const newUsername = request.body.newUsername;
+				const newPassword = request.body.newPassword;
+				const modifiedUser = await updateUser(newUsername, newPassword);
+				return response.json({ message: "User updated", modifiedUser });
+			}
+		} catch (error) {
+			next(error);
 		}
-	} catch (error) {
-		next(error);
 	}
-});
+);
 
-// DONE
+// DONE delete user
+router.delete(
+	"/:userId",
+	validate("params", "userIdSchema"),
+	authenticateUser,
+	async (request, response, next) => {
+		try {
+			// TODO test
+			const userToDelete = request.params.userId.toString();
+			const loggedInUser = request.user.userId.toString();
+			if (loggedInUser == userToDelete) {
+				const result = await deleteUser(userToDelete);
+				return response.json({ message: "User deleted", user: result });
+			} else {
+				return response.json({ message: "Unable to delete user" });
+			}
+		} catch (error) {
+			next(error);
+		}
+	}
+);
+
+// DONE logout user
 router.get("/logout", authenticateUser, (request, response, next) => {
 	try {
-		// TODO Client side remove token
+		// TODO client remove token
 		// request.headers.authorization = null;
 		if (request.user) {
 			return response.json({

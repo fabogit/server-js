@@ -20,11 +20,14 @@ function authenticateUser(request, response, next) {
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
 		if (err) return response.sendStatus(403).json({message: 'Forbidden or insufficient permissions'});
 		// create user if token is valid
+		// TODO only userId & isAdmin
 		// FIXME return only necessary informations
 		request.user = user;
 		next();
 	});
 }
+
+// TODO refresh token
 
 module.exports = {
 	serializeUser,
