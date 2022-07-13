@@ -67,6 +67,15 @@ tickets: {
 	username: string,
  	description: string,
   	isCompleted: boolean(default: false)
+
+	comunications: [
+		{
+		date: Date
+		userId: ObjectId,
+		username: string
+		message: string
+	}, ...
+	],
   	createdAt: Date
   	updatedAt: Date
 	}
