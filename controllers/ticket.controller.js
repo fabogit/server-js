@@ -9,11 +9,11 @@ const Ticket = require("../models/ticket.model");
  * @returns	A ticket Object
  */
 async function createTicket(username, userId, description, isCompleted) {
-	try {
-		return await Ticket.create({ username, userId, description, isCompleted });
-	} catch (error) {
-		throw error;
-	}
+  try {
+    return await Ticket.create({ username, userId, description, isCompleted });
+  } catch (error) {
+    throw error;
+  }
 }
 
 // TODO create comunications
@@ -25,17 +25,17 @@ async function createTicket(username, userId, description, isCompleted) {
  * @param {*} content
  */
 async function createTicketMessage(ticketId, username, userId, message) {
-	try {
-		// update ticket comunications, push to array
-		const updatedTicket = await Ticket.findByIdAndUpdate(ticketId, {
-			$push: {
-				comunications: { date: new Date(), userId, username, message },
-			},
-		});
-		return updatedTicket;
-	} catch (error) {
-		throw error;
-	}
+  try {
+    // update ticket comunications, push to array
+    const updatedTicket = await Ticket.findByIdAndUpdate(ticketId, {
+      $push: {
+        comunications: { date: new Date(), userId, username, message },
+      },
+    });
+    return updatedTicket;
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
@@ -46,16 +46,20 @@ async function createTicketMessage(ticketId, username, userId, message) {
  * @returns The total numbers of documents and the documents filterd based on the query parameter
  */
 async function getTickets(query, limit, skip) {
-	try {
-		// count how many and fetch filtering based on username/admin
-		const countPromise = Ticket.find(query).count();
-		const ticketsPromise = Ticket.find(query).limit(limit).skip(skip);
+  try {
+    // count how many and fetch filtering based on username/admin
+    const countPromise = Ticket.find(query).count();
+    const ticketsPromise = Ticket.find(query)
+      //Sort by Date DESC
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip);
 
-		const [count, tickets] = await Promise.all([countPromise, ticketsPromise]);
-		return { count, tickets };
-	} catch (error) {
-		throw error;
-	}
+    const [count, tickets] = await Promise.all([countPromise, ticketsPromise]);
+    return { count, tickets };
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
@@ -64,12 +68,12 @@ async function getTickets(query, limit, skip) {
  * @returns	A single ticket corresponding the passed ticketId
  */
 async function getTicketById(ticketId) {
-	try {
-		const ticket = await Ticket.findById({ _id: ticketId });
-		return ticket;
-	} catch (error) {
-		throw error;
-	}
+  try {
+    const ticket = await Ticket.findById({ _id: ticketId });
+    return ticket;
+  } catch (error) {
+    throw error;
+  }
 }
 
 // TODO TEST
@@ -80,15 +84,15 @@ async function getTicketById(ticketId) {
  * @returns the updated ticket object
  */
 async function adminUpdateTicket(ticketId, status) {
-	try {
-		const ticket = await Ticket.updateOne(
-			{ _id: ticketId },
-			{ isCompleted: status }
-		);
-		return ticket;
-	} catch (error) {
-		throw error;
-	}
+  try {
+    const ticket = await Ticket.updateOne(
+      { _id: ticketId },
+      { isCompleted: status }
+    );
+    return ticket;
+  } catch (error) {
+    throw error;
+  }
 }
 
 // TODO TEST
@@ -98,20 +102,20 @@ async function adminUpdateTicket(ticketId, status) {
  * @returns MongoDb operation outcome response
  */
 async function adminDeleteTicket(ticketId) {
-	try {
-		const ticket = await Ticket.deleteOne({ _id: ticketId });
-		return ticket;
-	} catch (error) {
-		throw error;
-	}
+  try {
+    const ticket = await Ticket.deleteOne({ _id: ticketId });
+    return ticket;
+  } catch (error) {
+    throw error;
+  }
 }
 
 module.exports = {
-	createTicket,
-	createTicketMessage,
-	getTickets,
-	getTicketById,
-	getTickets,
-	adminUpdateTicket,
-	adminDeleteTicket,
+  createTicket,
+  createTicketMessage,
+  getTickets,
+  getTicketById,
+  getTickets,
+  adminUpdateTicket,
+  adminDeleteTicket,
 };

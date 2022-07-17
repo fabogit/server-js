@@ -19,6 +19,8 @@ router.get(
   validate("query", "ticketQueryValSchema"),
   async (request, response, next) => {
     let query = {};
+		// TODO debug
+		console.log(request)
     if (!request.user.isAdmin) {
       const userId = request.user.userId;
       query = { userId: userId };
@@ -37,14 +39,18 @@ router.get(
       const pagesCount = count / limit;
 
       // TODO !PAGE LIMIT
-      if (tickets.length == 0) {
+ 			/*
+     if (tickets.length == 0) {
         return response.status(404).json({
           message: `No available tickets for page number ${page}, page max value ${pagesCount}, total items ${count}`,
         });
       }
+			 */
+			/*
       if (page > pagesCount) {
-        // return response.status(404).json({ message: `Page out of bound, total items ${count}, page max value ${pagesCount}` });
+        return response.status(404).json({ message: `Page out of bound, total items ${count}, page max value ${pagesCount}` });
       }
+			*/
       const pagination = {
         page,
         totalItems: count,
@@ -162,7 +168,7 @@ router.put(
           request.body.isCompleted
         );
         return response.json({
-          message: `Ticket ${ticketId} status updated by ${request.user.username}`,
+          message: `Ticket ${request.params.ticketId} status updated by ${request.user.username}`,
           ticket,
         });
       } else {
