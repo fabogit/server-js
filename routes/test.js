@@ -16,7 +16,7 @@ router.get(
 	async function (request, response, next) {
 		try {
 			const data = await User.find();
-			return response.json({ message: "Users", users: data });
+			return response.json(data);
 		} catch (error) {
 			next(error);
 		}

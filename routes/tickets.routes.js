@@ -19,7 +19,7 @@ router.get(
   validate("query", "ticketQueryValSchema"),
   async (request, response, next) => {
     let query = {};
-		// TODO debug
+		// FIXME debug
 		console.log(request)
     if (!request.user.isAdmin) {
       const userId = request.user.userId;
@@ -34,11 +34,11 @@ router.get(
 
       const { count, tickets } = await getTickets(query, limit, skip);
       if (!count) {
-        return response.status(404).json({ message: "Cannot find tickets" });
+        return response.status(404).json([]);
       }
       const pagesCount = count / limit;
 
-      // TODO !PAGE LIMIT
+      // FIXME !PAGE LIMIT
  			/*
      if (tickets.length == 0) {
         return response.status(404).json({
@@ -73,15 +73,12 @@ router.get(
       const ticketId = request.params.ticketId;
       const ticket = await getTicketById(ticketId);
       if (!ticket) {
-        return response.json({
+        return response.status(404).json({
           message: `Can not find TicketId _id:${ticketId}`,
         });
       }
 
-      return response.json({
-        message: `TicketId _id:${ticketId} retrived `,
-        ticket,
-      });
+      return response.json(ticket);
     } catch (error) {
       next(error);
     }
@@ -105,10 +102,7 @@ router.post(
         request.body.description,
         request.body.isCompleted
       );
-      return response.json({
-        message: `Ticket created by ${username}`,
-        ticket,
-      });
+      return response.status(201).json(ticket);
     } catch (error) {
       next(error);
     }
@@ -144,15 +138,16 @@ router.post(
         request.user.userId,
         request.body.message
       );
-      return response.json({
-        message: `Ticket message added by ${request.user.username}`,
-        ticketMessage,
-      });
+
+			// FIXME extra call?
+			ticket
+      return response.status(201).json(ticketMessage);
     } catch (error) {
       next(error);
     }
   }
 );
+
 // DONE
 router.put(
   "/:ticketId",
@@ -167,10 +162,7 @@ router.put(
           request.params.ticketId,
           request.body.isCompleted
         );
-        return response.json({
-          message: `Ticket ${request.params.ticketId} status updated by ${request.user.username}`,
-          ticket,
-        });
+        return response.json(ticket);
       } else {
         return response
           .status(401)

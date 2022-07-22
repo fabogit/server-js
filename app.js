@@ -19,7 +19,7 @@ app.use(logger("dev"));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-// TODO enable for client
+// TODO enable for client forms?
 // app.use(express.urlencoded({ extended: false }));
 
 // routes

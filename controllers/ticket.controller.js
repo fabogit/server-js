@@ -27,11 +27,15 @@ async function createTicket(username, userId, description, isCompleted) {
 async function createTicketMessage(ticketId, username, userId, message) {
   try {
     // update ticket comunications, push to array
-    const updatedTicket = await Ticket.findByIdAndUpdate(ticketId, {
-      $push: {
-        comunications: { date: new Date(), userId, username, message },
+    const updatedTicket = await Ticket.findByIdAndUpdate(
+      ticketId,
+      {
+        $push: {
+          comunications: { date: new Date(), userId, username, message },
+        },
       },
-    });
+      { new: true }
+    );
     return updatedTicket;
   } catch (error) {
     throw error;
@@ -85,9 +89,10 @@ async function getTicketById(ticketId) {
  */
 async function adminUpdateTicket(ticketId, status) {
   try {
-    const ticket = await Ticket.updateOne(
-      { _id: ticketId },
-      { isCompleted: status }
+    const ticket = await Ticket.findByIdAndUpdate(
+      ticketId,
+      { isCompleted: status },
+      { new: true }
     );
     return ticket;
   } catch (error) {
