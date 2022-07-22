@@ -24,10 +24,15 @@ router.post(
 				request.body.password,
 				request.body.isAdmin
 			);
-			return response.json({
-				message: "User created",
-				user: request.body.username,
-			});
+			// console.log(user);
+			// set password to null
+			// userDataToExpose.password = "***"
+			const userDataToExpose = {
+			userId: user._id,
+			username: user.username,
+			isAdmin: user.isAdmin
+			}
+			return response.status(201).json(userDataToExpose);
 		} catch (error) {
 			next(error);
 		}
@@ -83,7 +88,8 @@ router.put(
 // DONE delete user
 router.delete(
 	"/:userId",
-	validate("params", "userIdSchema"),
+	// FIXME broken validator
+	// validate("params", "userIdSchema"),
 	authenticateUser,
 	async (request, response, next) => {
 		try {
